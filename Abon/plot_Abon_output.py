@@ -1,0 +1,157 @@
+# Script to look at the output files of Rpro calculation
+# ----
+# Plan is to plot:
+# -T&rho vs time
+# ab vs time (given A)
+# solar ab vs time (given A)
+# final ab vs A or Z
+
+##ANIMATION NOT WORKING YES
+
+import numpy as np
+import matplotlib.pyplot as plt
+import sys
+import os
+
+file_aa    = "aa0132511"
+file_ab_aa = "ab_aa0132511"
+
+# File content of ab_aa:
+# [skipheader=11 lines]
+# T9:                  ...
+# Nn[cm-3]:            ...
+# Sum-1:               ...
+# Time[s]:             ...
+# ncap:                ...
+#  Z   A   Solar       ...
+#   0   1  1.000E-25   ...
+
+filename = file_aa
+
+#print np.genfromtxt(file_ab_aa,skip_header=11,max_rows=1,dtype=str)[0]
+T9 =     np.genfromtxt(filename,skip_header=11,max_rows=1)[2:] # the 0 element is the varname, 1 is last column(?), then time start
+Nn =     np.genfromtxt(filename,skip_header=12,max_rows=1)[2:] 
+Sum_m1 = np.genfromtxt(filename,skip_header=13,max_rows=1)[2:] # ?????
+Time =   np.genfromtxt(filename,skip_header=14,max_rows=1)[2:]
+ncap =   np.genfromtxt(filename,skip_header=15,max_rows=1)[2:] 
+
+#---------------------------------------------------------------------
+def create_animation_from_plots(plotname='test2', name='', play='yes'):
+    # Creates an animation / movie from png files in the folder "animation_figures". 
+    # The figures must have file names with 7digits counting up with the ending "_test2.png"
+    # The movie is played unless keyword play='no' 
+    # If there already exist a movie with the same filename in the folder the old movie is 
+    # deleted before the new movie is made. When the movie is made all of the png files in 
+    # the folder is deleted (this will happen even if there is an error). 
+
+    # This function needs the package ffmpeg installed. If this package is not installed 
+    # uncomment the line using this function and look at the plots instead. 
+
+    # ------
+    # Parameters
+
+    #   plotname : optional, string
+    #           the name following the 7digit number in the filename of the 
+    #           png files in the folder  (without .png)
+    #   name : optional, string
+    #           the name of the mp4 movie (without .mp4)
+    #   play : optional, string
+    #           if anything but 'yes' is given the movie will not be played by vlc
+
+    # Returns (no return statement)
+    # ------
+
+    if name == '':
+        vid_filename = 'animation_figures/movie_%s.mp4' %plotname
+    else:
+        vid_filename = 'animation_figures/%s.mp4' %name
+
+    if os.path.isfile(vid_filename):
+        os.system( ("rm " + vid_filename) )
+
+    os.system("ffmpeg -r 6 -f image2 -start_number 1000001 -i animation_figures/%07d_" + "%s.png  -vcodec libx264 -s 1920x1080 " %plotname + vid_filename)
+    print '\nThe movie should now be in the folder animation_figures'
+
+    if play=='yes':
+        os.system("open -a vlc " + vid_filename)
+
+    os.system("rm animation_figures/*.png")
+    print 'All animation_figures/*.png removed  '
+#---------------------------------------------------------------------
+N = len(Time)
+
+A_array =     np.genfromtxt(file_aa,skip_header=17,usecols=0)
+abund_solar = np.genfromtxt(file_aa,skip_header=17,usecols=1)
+abund_end   = np.genfromtxt(file_aa,skip_header=17,usecols=-1)
+
+
+#---------------------------------------------------------------------
+
+make_figs = False
+
+if make_figs:
+    for col in range(2,N):
+        abund_start = np.genfromtxt(file_aa,skip_header=17,usecols=col) # WHERE DOES THE TIME START?? Col=4 is same as col=-1...?
+
+
+        fig1, ax = plt.subplots()
+
+        plt.semilogy(A_array,abund_solar,'s',label='Solar (hvorfor noe 1e-25?')
+        plt.semilogy(A_array,abund_end,'*',label='End (last column)')
+        plt.semilogy(A_array,abund_start,'o',label='Evolution col=%s' %col)
+
+        #ax.axis([50,250,1e-6,1])
+        ax.legend()
+        ax.grid(which='major', linestyle=':', linewidth='0.5', color='grey')
+        ax.set_title('%s' %file_aa)
+        ax.set_xlabel('Mass number, A')
+        ax.set_ylabel('Abundance or Mass fraction? []')
+
+        plt.tight_layout()
+        plt.savefig('animation_figures/col%s.png' %col)
+
+        plt.close()
+
+####CONTINUE HERE
+
+#creating movie, uncoment this line if ffmpeg is not installed:
+#create_animation_from_plots(play='yes', plotname=plotname_data) 
+
+
+
+
+"""
+# Two subplots, the axes array is 1-d
+fig2, axarr = plt.subplots(2,2, sharex=True)
+
+axarr[0,0].loglog(Time, T9,'b')
+axarr[0,1].loglog(Time, Nn,'r')
+axarr[1,0].semilogx(Time, ncap,'g')
+axarr[1,1].semilogx(Time,Sum_m1,'k')
+
+axarr[0,0].set_title('%s' %filename)
+axarr[1,0].set_xlabel('Time [s]')
+axarr[1,1].set_xlabel('Time [s]')
+
+axarr[0,0].set_ylabel(r'Temperature $T_9$ [$10^9$ K]')
+axarr[0,1].set_ylabel(r'Neutron density $N_n$ [cm$^{-3}$]')
+axarr[1,0].set_ylabel(r'$n_{cap}$ [??]')
+axarr[1,1].set_ylabel(r'$Sum^{-1}$ [??]')
+
+# Customize the major grid
+axarr[0,0].grid(which='major', linestyle=':', linewidth='0.5', color='grey')
+axarr[0,1].grid(which='major', linestyle=':', linewidth='0.5', color='grey')
+axarr[1,0].grid(which='major', linestyle=':', linewidth='0.5', color='grey')
+axarr[1,1].grid(which='major', linestyle=':', linewidth='0.5', color='grey')
+
+
+"""
+
+
+#plt.show()
+
+
+
+
+
+
