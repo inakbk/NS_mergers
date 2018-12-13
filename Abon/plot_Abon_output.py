@@ -6,8 +6,6 @@
 # solar ab vs time (given A)
 # final ab vs A or Z
 
-##ANIMATION NOT WORKING YES
-
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
@@ -27,13 +25,6 @@ file_ab_aa = "ab_aa0132511"
 #   0   1  1.000E-25   ...
 
 filename = file_aa
-
-#print np.genfromtxt(file_ab_aa,skip_header=11,max_rows=1,dtype=str)[0]
-T9 =     np.genfromtxt(filename,skip_header=11,max_rows=1)[2:] # the 0 element is the varname, 1 is last column(?), then time start
-Nn =     np.genfromtxt(filename,skip_header=12,max_rows=1)[2:] 
-Sum_m1 = np.genfromtxt(filename,skip_header=13,max_rows=1)[2:] # ?????
-Time =   np.genfromtxt(filename,skip_header=14,max_rows=1)[2:]
-ncap =   np.genfromtxt(filename,skip_header=15,max_rows=1)[2:] 
 
 #---------------------------------------------------------------------
 def create_animation_from_plots(plotname='test2', name='', play='yes'):
@@ -69,27 +60,32 @@ def create_animation_from_plots(plotname='test2', name='', play='yes'):
     if os.path.isfile(vid_filename):
         os.system( ("rm " + vid_filename) )
 
-    os.system("ffmpeg -r 6 -f image2 -start_number 1000001 -i animation_figures/%07d_" + "%s.png  -vcodec libx264 -s 1920x1080 " %plotname + vid_filename)
-    print '\nThe movie should now be in the folder animation_figures'
+    os.system("ffmpeg -r 6 -f image2 -start_number 0000002 -i animation_figures/" + plotname + "%07d_.png  -vcodec libx264 -s 1920x1080 " + vid_filename)
+    print '\nThe movie should now be in the folder animation_figures, \n' + vid_filename
 
     if play=='yes':
         os.system("open -a vlc " + vid_filename)
 
-    os.system("rm animation_figures/*.png")
-    print 'All animation_figures/*.png removed  '
-#---------------------------------------------------------------------
-N = len(Time)
-
-A_array =     np.genfromtxt(file_aa,skip_header=17,usecols=0)
-abund_solar = np.genfromtxt(file_aa,skip_header=17,usecols=1)
-abund_end   = np.genfromtxt(file_aa,skip_header=17,usecols=-1)
-
-
+    #os.system("rm animation_figures/*.png")
+    #print 'All animation_figures/*.png removed  '
 #---------------------------------------------------------------------
 
 make_figs = False
 
 if make_figs:
+    #print np.genfromtxt(file_ab_aa,skip_header=11,max_rows=1,dtype=str)[0]
+    T9 =     np.genfromtxt(filename,skip_header=11,max_rows=1)[2:] # the 0 element is the varname, 1 is last column(?), then time start
+    Nn =     np.genfromtxt(filename,skip_header=12,max_rows=1)[2:] 
+    Sum_m1 = np.genfromtxt(filename,skip_header=13,max_rows=1)[2:] # ?????
+    Time =   np.genfromtxt(filename,skip_header=14,max_rows=1)[2:]
+    ncap =   np.genfromtxt(filename,skip_header=15,max_rows=1)[2:] 
+
+    N = len(Time)
+
+    A_array =     np.genfromtxt(file_aa,skip_header=17,usecols=0)
+    abund_solar = np.genfromtxt(file_aa,skip_header=17,usecols=1)
+    abund_end   = np.genfromtxt(file_aa,skip_header=17,usecols=-1)
+
     for col in range(2,N):
         abund_start = np.genfromtxt(file_aa,skip_header=17,usecols=col) # WHERE DOES THE TIME START?? Col=4 is same as col=-1...?
 
@@ -108,14 +104,16 @@ if make_figs:
         ax.set_ylabel('Abundance or Mass fraction? []')
 
         plt.tight_layout()
-        plt.savefig('animation_figures/col%s.png' %col)
+        plt.savefig('animation_figures/col0000%s.png' %col) #NOT ENTIRELY CORRECT
 
         plt.close()
 
-####CONTINUE HERE
+#---------------------------------------------------------------------
+
+# File names: col000765.png
 
 #creating movie, uncoment this line if ffmpeg is not installed:
-#create_animation_from_plots(play='yes', plotname=plotname_data) 
+create_animation_from_plots(play='yes', plotname='col',name='NS_ab_animation') 
 
 
 
