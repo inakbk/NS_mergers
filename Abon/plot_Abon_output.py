@@ -58,10 +58,12 @@ def create_animation_from_plots(plotname='test2', name='', play='yes'):
         vid_filename = 'animation_figures/%s.mp4' %name
 
     if os.path.isfile(vid_filename):
-        os.system( ("rm " + vid_filename) )
+        os.system( ("rm " + vid_filename) ) 
 
-    os.system("ffmpeg -r 6 -f image2 -start_number 0000002 -i animation_figures/" + plotname + "%07d_.png  -vcodec libx264 -s 1920x1080 " + vid_filename)
-    print '\nThe movie should now be in the folder animation_figures, \n' + vid_filename
+    os.system("ffmpeg -r 6 -f image2 -start_number 0000002 -i animation_figures/" + plotname + "%06d.png  -vcodec libx264 -s 1920x1080 " + vid_filename)
+    #os.system("ffmpeg -start_number 000002 -i col%06d.png video.mp4" )
+
+    print '\nThe movie should now be in the folder animation_figures, \n'
 
     if play=='yes':
         os.system("open -a vlc " + vid_filename)
@@ -87,25 +89,26 @@ if make_figs:
     abund_end   = np.genfromtxt(file_aa,skip_header=17,usecols=-1)
 
     for col in range(2,N):
+    #for col in range(2,3):
         abund_start = np.genfromtxt(file_aa,skip_header=17,usecols=col) # WHERE DOES THE TIME START?? Col=4 is same as col=-1...?
-
 
         fig1, ax = plt.subplots()
 
-        plt.semilogy(A_array,abund_solar,'s',label='Solar (hvorfor noe 1e-25?')
-        plt.semilogy(A_array,abund_end,'*',label='End (last column)')
-        plt.semilogy(A_array,abund_start,'o',label='Evolution col=%s' %col)
+        ax.semilogy(A_array,abund_solar,'s',label='Solar (hvorfor noe 1e-25?')
+        ax.semilogy(A_array,abund_end,'*',label='End (last column)')
+        ax.semilogy(A_array,abund_start,'o',label='Evolution col=%s' %col)
 
-        #ax.axis([50,250,1e-6,1])
-        ax.legend()
-        ax.grid(which='major', linestyle=':', linewidth='0.5', color='grey')
+        ax.axis([0,250,1e-6,1])
+        ax.legend(loc='upper right')
+        #ax.grid(which='major', linestyle=':', linewidth='0.5', color='grey')
         ax.set_title('%s' %file_aa)
         ax.set_xlabel('Mass number, A')
         ax.set_ylabel('Abundance or Mass fraction? []')
 
         plt.tight_layout()
-        plt.savefig('animation_figures/col0000%s.png' %col) #NOT ENTIRELY CORRECT
+        plt.savefig('animation_figures/col{:06d}.png'.format(col)) 
 
+        #plt.show()
         plt.close()
 
 #---------------------------------------------------------------------
