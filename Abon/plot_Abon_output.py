@@ -63,7 +63,7 @@ def create_animation_from_plots(plotname='test2', name='', play='yes'):
     os.system("ffmpeg -r 6 -f image2 -start_number 0000002 -i animation_figures/" + plotname + "%06d.png  -vcodec libx264 -s 1920x1080 " + vid_filename)
     #os.system("ffmpeg -start_number 000002 -i col%06d.png video.mp4" )
 
-    print '\nThe movie should now be in the folder animation_figures, \n'
+    print '\nThe movie should now be in the folder animation_figures. \n'
 
     if play=='yes':
         os.system("open -a vlc " + vid_filename)
@@ -72,7 +72,8 @@ def create_animation_from_plots(plotname='test2', name='', play='yes'):
     #print 'All animation_figures/*.png removed  '
 #---------------------------------------------------------------------
 
-make_figs = False
+make_figs = True
+make_movie = False
 
 if make_figs:
     #print np.genfromtxt(file_ab_aa,skip_header=11,max_rows=1,dtype=str)[0]
@@ -88,8 +89,8 @@ if make_figs:
     abund_solar = np.genfromtxt(file_aa,skip_header=17,usecols=1)
     abund_end   = np.genfromtxt(file_aa,skip_header=17,usecols=-1)
 
-    for col in range(2,N):
-    #for col in range(2,3):
+    #for col in range(2,N):
+    for col in range(2,3):
         abund_start = np.genfromtxt(file_aa,skip_header=17,usecols=col) # WHERE DOES THE TIME START?? Col=4 is same as col=-1...?
 
         fig1, ax = plt.subplots()
@@ -109,47 +110,46 @@ if make_figs:
         plt.savefig('animation_figures/col{:06d}.png'.format(col)) 
 
         #plt.show()
-        plt.close()
+        #plt.close()
+
+
+    # Two subplots, the axes array is 1-d
+    fig2, axarr = plt.subplots(2,2, sharex=True)
+
+    axarr[0,0].loglog(Time, T9,'b')
+    axarr[0,1].loglog(Time, Nn,'r')
+    axarr[1,0].semilogx(Time, ncap,'g')
+    axarr[1,1].semilogx(Time,Sum_m1,'k')
+
+    axarr[0,0].set_title('%s' %filename)
+    axarr[1,0].set_xlabel('Time [s]')
+    axarr[1,1].set_xlabel('Time [s]')
+
+    axarr[0,0].set_ylabel(r'Temperature $T_9$ [$10^9$ K]')
+    axarr[0,1].set_ylabel(r'Neutron density $N_n$ [cm$^{-3}$]')
+    axarr[1,0].set_ylabel(r'$n_{cap}$ [??]')
+    axarr[1,1].set_ylabel(r'$Sum^{-1}$ [??]')
+
+    # Customize the major grid
+    #axarr[0,0].grid(which='major', linestyle=':', linewidth='0.5', color='grey')
+    #axarr[0,1].grid(which='major', linestyle=':', linewidth='0.5', color='grey')
+    #axarr[1,0].grid(which='major', linestyle=':', linewidth='0.5', color='grey')
+    #axarr[1,1].grid(which='major', linestyle=':', linewidth='0.5', color='grey')
+
+    plt.show()
+
 
 #---------------------------------------------------------------------
 
-# File names: col000765.png
-
-#creating movie, uncoment this line if ffmpeg is not installed:
-create_animation_from_plots(play='yes', plotname='col',name='NS_ab_animation') 
-
+elif make_movie:
+    #creating movie, uncoment this line if ffmpeg is not installed:
+    create_animation_from_plots(play='yes', plotname='col',name='NS_ab_animation') 
 
 
 
-"""
-# Two subplots, the axes array is 1-d
-fig2, axarr = plt.subplots(2,2, sharex=True)
-
-axarr[0,0].loglog(Time, T9,'b')
-axarr[0,1].loglog(Time, Nn,'r')
-axarr[1,0].semilogx(Time, ncap,'g')
-axarr[1,1].semilogx(Time,Sum_m1,'k')
-
-axarr[0,0].set_title('%s' %filename)
-axarr[1,0].set_xlabel('Time [s]')
-axarr[1,1].set_xlabel('Time [s]')
-
-axarr[0,0].set_ylabel(r'Temperature $T_9$ [$10^9$ K]')
-axarr[0,1].set_ylabel(r'Neutron density $N_n$ [cm$^{-3}$]')
-axarr[1,0].set_ylabel(r'$n_{cap}$ [??]')
-axarr[1,1].set_ylabel(r'$Sum^{-1}$ [??]')
-
-# Customize the major grid
-axarr[0,0].grid(which='major', linestyle=':', linewidth='0.5', color='grey')
-axarr[0,1].grid(which='major', linestyle=':', linewidth='0.5', color='grey')
-axarr[1,0].grid(which='major', linestyle=':', linewidth='0.5', color='grey')
-axarr[1,1].grid(which='major', linestyle=':', linewidth='0.5', color='grey')
 
 
-"""
 
-
-#plt.show()
 
 
 
