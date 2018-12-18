@@ -1,7 +1,7 @@
 # This script plots the physical quantities of the Rpro output at 
 # a given time or evolves the time (animation)
 
-# The output files of the Rpro calc is copied over to the directory 
+# The output files of the Rpro calc has to be copied over to the directory 
 # /Abon
 
 import numpy as np

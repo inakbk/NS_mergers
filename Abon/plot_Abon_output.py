@@ -1,3 +1,5 @@
+# THIS IS AN EARLY VERSION THE OTHER CODE IS BETTER
+
 # Script to look at the output files of Rpro calculation
 # ----
 # Plan is to plot:
