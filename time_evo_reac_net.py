@@ -31,8 +31,6 @@ Sum_m1 = data_matrix1[2,col_start:]
 Time   = data_matrix1[3,col_start:]
 ncap   = data_matrix1[4,col_start:]
 
-
-
 # Different normalizations of the final evolution (arrays with 3 values):
 T9_norm     = data_matrix1[0,0:col_start]
 Nn_norm     = data_matrix1[1,0:col_start]
@@ -67,16 +65,25 @@ mass_frac_data  = data_matrix2[:,5:-1] # mass_frac_data[A,time_col]
 #print ncap[0:-2:2] - ncap[1:-1:2]
 #-----
 
-# Remove double data points:
+# Remove double data points before plot:
 
-Time = Time[0:-2:2]
+T9     = T9[0:-2:2]
+Nn     = Nn[0:-2:2]
+Sum_m1 = Sum_m1[0:-2:2] # !!!
+Time   = Time[0:-2:2]
+ncap   = ncap[0:-2:2]
 
 mass_frac_fin = mass_frac_data[:,1:-1:2]
 mass_frac_evo = mass_frac_data[:,0:-2:2]
 
+#-----
+# PLOT EVERYTHING HERE
 
-plt.loglog(Time,mass_frac_fin[100,:])
 
-plt.show()
+#plt.loglog(Time,mass_frac_fin[100,:])
+
+#plt.show()
+
+
 
 
