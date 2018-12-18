@@ -1,4 +1,4 @@
-# This script plots the physical quantities of the Rpro output at 
+# This script plots the physical quantities of the Rpro output (aa file) at 
 # a given time or evolves the time (animation)
 
 # The output files of the Rpro calc has to be copied over to the directory 
@@ -13,8 +13,6 @@ ID_merger = "0132511"
 
 directory = "Abon/"
 file_aa = directory + "aa" + ID_merger
-file_pf = directory + "pf_" + file_aa
-
 
 # The 0 element is the variable name, 1,2,3 is final ab. different normalizations,
 # therefore the time starts at col_start:
