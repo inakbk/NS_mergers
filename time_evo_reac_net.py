@@ -19,7 +19,7 @@ file_pf = directory + "pf_" + file_aa
 # The 0 element is the variable name, 1,2,3 is final ab. different normalizations,
 # therefore the time starts at col_start:
 col_start = 3
-N_data = 767
+N_data = 768
 
 # The upper part of the data file:
 data_matrix1 = np.genfromtxt(file_aa,skip_header=11,usecols=range(1,N_data))
@@ -31,6 +31,8 @@ Sum_m1 = data_matrix1[2,col_start:]
 Time   = data_matrix1[3,col_start:]
 ncap   = data_matrix1[4,col_start:]
 
+
+
 # Different normalizations of the final evolution (arrays with 3 values):
 T9_norm     = data_matrix1[0,0:col_start]
 Nn_norm     = data_matrix1[1,0:col_start]
@@ -39,9 +41,9 @@ Time_norm   = data_matrix1[3,0:col_start]
 ncap_norm   = data_matrix1[4,0:col_start]
 
 #-----
-# The lower part of the data file with 2 more columns than the upper, 
+# The lower part of the data file with 1 more column than the upper, 
 # since A and Solar is included
-data_matrix2 = np.genfromtxt(file_aa,skip_header=17,usecols=range(0,N_data+2)) 
+data_matrix2 = np.genfromtxt(file_aa,skip_header=17,usecols=range(0,N_data+1)) 
 
 A_array         = data_matrix2[:,0]
 solar_mass_frac = data_matrix2[:,1]
@@ -52,14 +54,29 @@ mass_frac_data  = data_matrix2[:,5:-1] # mass_frac_data[A,time_col]
 
 
 #-----
-# Now, sort away the "double" data points
+# Now, when we plot we dont want the "double" data points,
+# we use numpy's slicing array[start:stop:step]
+
+# First test to see that the upper part of the data has the same values
+# in the double datapoint (true for all except for Sum_m1)
+
+#print T9[0:-2:2] - T9[1:-1:2]
+#print Nn[0:-2:2] - Nn[1:-1:2]
+#print Sum_m1[0:-2:2] - Sum_m1[1:-1:2] #!!!
+#print Time[0:-2:2] - Time[1:-1:2]
+#print ncap[0:-2:2] - ncap[1:-1:2]
+#-----
+
+# Remove double data points:
+
+Time = Time[0:-2:2]
+
+mass_frac_fin = mass_frac_data[:,1:-1:2]
+mass_frac_evo = mass_frac_data[:,0:-2:2]
 
 
+plt.loglog(Time,mass_frac_fin[100,:])
 
-
-
-
-
-
+plt.show()
 
 
