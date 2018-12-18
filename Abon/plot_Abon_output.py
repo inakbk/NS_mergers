@@ -11,23 +11,13 @@ import matplotlib.pyplot as plt
 import sys
 import os
 
-file_aa    = "aa0132511"
-file_ab_aa = "ab_aa0132511"
+filename = "aa0132511"
 
-# File content of ab_aa:
-# [skipheader=11 lines]
-# T9:                  ...
-# Nn[cm-3]:            ...
-# Sum-1:               ...
-# Time[s]:             ...
-# ncap:                ...
-#  Z   A   Solar       ...
-#   0   1  1.000E-25   ...
-
-filename = file_aa
 
 #---------------------------------------------------------------------
 def create_animation_from_plots(plotname='test2', name='', play='yes'):
+    # Function adapted from MSU project V17
+
     # Creates an animation / movie from png files in the folder "animation_figures". 
     # The figures must have file names with 7digits counting up with the ending "_test2.png"
     # The movie is played unless keyword play='no' 
@@ -76,7 +66,6 @@ make_figs = True
 make_movie = False
 
 if make_figs:
-    #print np.genfromtxt(file_ab_aa,skip_header=11,max_rows=1,dtype=str)[0]
     T9 =     np.genfromtxt(filename,skip_header=11,max_rows=1)[2:] # the 0 element is the varname, 1 is last column(?), then time start
     Nn =     np.genfromtxt(filename,skip_header=12,max_rows=1)[2:] 
     Sum_m1 = np.genfromtxt(filename,skip_header=13,max_rows=1)[2:] # ?????
@@ -85,13 +74,13 @@ if make_figs:
 
     N = len(Time)
 
-    A_array =     np.genfromtxt(file_aa,skip_header=17,usecols=0)
-    abund_solar = np.genfromtxt(file_aa,skip_header=17,usecols=1)
-    abund_end   = np.genfromtxt(file_aa,skip_header=17,usecols=-1)
+    A_array =     np.genfromtxt(filename,skip_header=17,usecols=0)
+    abund_solar = np.genfromtxt(filename,skip_header=17,usecols=1)
+    abund_end   = np.genfromtxt(filename,skip_header=17,usecols=-1)
 
     #for col in range(2,N):
     for col in range(2,3):
-        abund_start = np.genfromtxt(file_aa,skip_header=17,usecols=col) # WHERE DOES THE TIME START?? Col=4 is same as col=-1...?
+        abund_start = np.genfromtxt(filename,skip_header=17,usecols=col) # WHERE DOES THE TIME START?? Col=4 is same as col=-1...?
 
         fig1, ax = plt.subplots()
 
@@ -102,7 +91,7 @@ if make_figs:
         ax.axis([0,250,1e-6,1])
         ax.legend(loc='upper right')
         #ax.grid(which='major', linestyle=':', linewidth='0.5', color='grey')
-        ax.set_title('%s' %file_aa)
+        ax.set_title('%s' %filename)
         ax.set_xlabel('Mass number, A')
         ax.set_ylabel('Abundance or Mass fraction? []')
 
@@ -130,7 +119,7 @@ if make_figs:
     axarr[1,0].set_ylabel(r'$n_{cap}$ [??]')
     axarr[1,1].set_ylabel(r'$Sum^{-1}$ [??]')
 
-    # Customize the major grid
+    # Customize the major grid -->does not work after update python or something
     #axarr[0,0].grid(which='major', linestyle=':', linewidth='0.5', color='grey')
     #axarr[0,1].grid(which='major', linestyle=':', linewidth='0.5', color='grey')
     #axarr[1,0].grid(which='major', linestyle=':', linewidth='0.5', color='grey')
