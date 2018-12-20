@@ -75,12 +75,60 @@ mass_frac_fin = mass_frac_data[:,1:-1:2]
 mass_frac_evo = mass_frac_data[:,0:-2:2]
 
 #-----
-# PLOT EVERYTHING HERE
+
+# Plotting the time evolution of physical quantities
+fig1, ax1 = plt.subplots(2,2, sharex=True)
+
+ax1[0,0].loglog(Time, T9,'b')
+ax1[0,1].loglog(Time, Nn,'r')
+ax1[1,0].semilogx(Time, ncap,'g')
+ax1[1,1].semilogx(Time,Sum_m1,'k')
+
+ax1[0,1].set_title('Merger: %s' %ID_merger)
+ax1[1,0].set_xlabel('Time [s]')
+ax1[1,1].set_xlabel('Time [s]')
+ax1[0,0].set_ylabel(r'Temperature $T_9$ [$10^9$ K]')
+ax1[0,1].set_ylabel(r'Neutron density $N_n$ [cm$^{-3}$]')
+ax1[1,0].set_ylabel(r'$n_{cap}$')
+ax1[1,1].set_ylabel(r'SUM - 1')
 
 
-#plt.loglog(Time,mass_frac_fin[100,:])
+# Plotting final abundance in one single plot
+fig2, ax2 = plt.subplots()
+
+ax2.semilogy(A_array,mass_frac_norms[:,2],'o--', fillstyle='none', label='Final abundance')
+ax2.semilogy(A_array,solar_mass_frac, '*', fillstyle='none', label='Solar abundance distribution')
+ax2.axis([0,250,1e-6,1])
+ax2.set_xlabel('Mass number, A')
+ax2.set_ylabel('Abundance')
+ax2.legend()
+
+plt.close()
+
+# Plotting all time steps of abundance
+
+# Loop over abundance
+
+ #One for fin one evo
+
+
+
+
+#plt.tight_layout()
 
 #plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
